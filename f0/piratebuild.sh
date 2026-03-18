@@ -57,7 +57,7 @@ if ! command -v ufbt &> /dev/null; then
     fi
 fi
 
-# 3. Clone or Update
+# 3. Clone or Update Repo
 if [ ! -d "$DIR_NAME" ]; then
     echo "Cloning from protopirate.net..."
     git clone "$REPO_URL" "$DIR_NAME"
@@ -73,11 +73,15 @@ fi
 echo "Patching files..."
 sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' defines.h 2>/dev/null || \
 sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' src/defines.h
+
 sed -i 's/gui/gui,subghz/g' application.fam
 
-# 5. Build
-echo "Updating SDK and building..."
-ufbt update
+# 5. SDK Update & Build
+echo "Updating SDK for Unleashed..."
+# For Momentum, use: ufbt update --index-url https://get.momentum-fw.com/directory.json --channel dev
+ufbt update --index-url https://up.unleashedflip.com/directory.json --channel dev
+
+echo "Building FAP..."
 ufbt
 
 echo "------------------------------------------------"
