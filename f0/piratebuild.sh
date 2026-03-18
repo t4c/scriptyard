@@ -17,7 +17,9 @@
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 #
-#  0. You just DO WHAT THE FUCK YOU WANT TO.set -e
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+
+set -e
 
 # Ensure local bin is in PATH
 export PATH="$HOME/.local/bin:$PATH"
@@ -71,7 +73,6 @@ fi
 echo "Patching files..."
 sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' defines.h 2>/dev/null || \
 sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' src/defines.h
-
 sed -i 's/gui/gui,subghz/g' application.fam
 
 # 5. Build
