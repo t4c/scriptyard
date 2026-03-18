@@ -1,0 +1,23 @@
+# Remove MAILERDAEMON from queue
+mailq|grep MAILER|awk '{print $1}'|xargs -n1 postsuper -d
+
+# shred files
+find ./ -type f -exec shred -n 35 -u -v -z {} \;
+
+# top10 memeaters
+ps aux --sort=-%mem | awk 'NR<=10{print $0}'
+
+# largest files in folder
+du -ah . | sort -rh | head -n 20
+
+# whatsmyip?
+curl -s https://ifconfig.me
+
+# poor man's nmap
+for i in {1..1024}; do (echo > /dev/tcp/127.0.0.1/$i) >/dev/null 2>&1 && echo "$i open"; done
+
+# mem forensics (old!)
+strings /dev/mem | grep -i "password"
+
+# realtime file snoop
+strace -p <PID> -e trace=openat,open

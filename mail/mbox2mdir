@@ -1,0 +1,31 @@
+#!/bin/bash
+
+## Config
+#########
+
+MAILDIR=/old_system/foobar/var/spool/mail
+IMAPDIR=/home
+MBOX2MDIR=/tmp/mbox2mdir-1.2/mbox2mdir
+
+## Script
+#########
+
+cd $MAILDIR; \
+for POPKONTEN in `cat /etc/passwd | cut -d ':' -f 1 | grep -e "web.*p"`; \
+do \
+if ! test -d $IMAPDIR/$POPKONTEN ; then \
+echo Erstelle das Verzeichniss $IMAPDIR/$DIR und setze die Rechte; \
+mkdir $IMAPDIR/$POPKONTEN ; \
+chown -R $POPKONTEN.poponly $IMAPDIR/$POPKONTEN ; \
+fi ; \
+if ! test -d $IMAPDIR/$POPKONTEN/Maildir ; then \
+echo Erstelle das Maildir Verzeichniss fuer $POPKONTEN ; \
+mkdir $IMAPDIR/$POPKONTEN/Maildir ; \
+mkdir $IMAPDIR/$POPKONTEN/Maildir/cur ; \
+mkdir $IMAPDIR/$POPKONTEN/Maildir/new ; \
+mkdir $IMAPDIR/$POPKONTEN/Maildir/tmp ; \
+chown -R $POPKONTEN.poponly $IMAPDIR/$POPKONTEN ; \
+echo Importiere die Mailbox 2 Maildir von $POPKONTEN ; \
+$MBOX2MDIR $POPKONTEN $IMAPDIR/$POPKONTEN/Maildir/cur -t ; \
+fi
+done
