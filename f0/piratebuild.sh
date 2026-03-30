@@ -76,6 +76,13 @@ sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' 
 
 sed -i 's/gui/gui,subghz/g' application.fam
 
+echo "Do you want to increase the stack_size in application.fam to 8 * 1024? (y/n)"
+read STACK_REPLY
+if [ "$STACK_REPLY" = "y" ] || [ "$STACK_REPLY" = "Y" ]; then
+    sed -i 's/stack_size=2 \* 1024/stack_size=8 \* 1024/g' application.fam
+    echo "Stack size increased."
+fi
+
 # 5. SDK Update & Build
 echo "Updating SDK for Unleashed..."
 # For Momentum, use: ufbt update --index-url https://get.momentum-fw.com/directory.json --channel dev
