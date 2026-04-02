@@ -71,8 +71,7 @@ fi
 
 # 4. Patching
 echo "Patching files..."
-sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' defines.h 2>/dev/null || \
-sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' src/defines.h
+sed -i 's/\/\/ #define ENABLE_EMULATE_FEATURE/#define ENABLE_EMULATE_FEATURE/g' defines.h 2>/dev/null
 
 sed -i 's/gui/gui,subghz/g' application.fam
 
