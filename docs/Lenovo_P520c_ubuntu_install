@@ -1,0 +1,90 @@
+# Thinkstation P520c Ubuntu Installation
+#
+# After having hours of fuckups while trying to install Ubuntu 22.04 or 24.04 to this workstation
+# here some ideas that may help.
+#
+# Problem: Live/Installationimage boots without any problems, but as soon as any interaction with NVMe
+# needed no devices available and installer quits with an error
+# "block probing crashed with ValueError" or "sorry there was a problem examining the storage devices on this system ubuntu"
+#
+# After hours of pointless debugging involving some admin friends and AI I remembered my past and took bootstrap.
+# Here are all things I did, not knowing exactly if all steps are needed.
+#
+# BIOS/UEFI Settings
+#
+# DISABLE both Controller cpus for the VMD, secureboot, CSM and TPM, fastboot
+# UEFI only
+# Storage mode: AHCI not raid
+# 
+# Boot a debian/ubuntu based live system, I used the installer. At bootloader level edit the linux line (e in grub)
+#
+# linux /casper/vmlinuz boot=casper quiet splash pcie_aspm=off intel_iommu=off nvme_core.default_ps_max_latency_us=0 ---
+#
+# pcie_aspm=off Disables Active State Power Management on the PCIe bus 
+# intel_iommu=offDisables IOMMU virtualization to prevent memory mapping
+# errors.nvme_core.default_ps_max_latency_us=0Prevents deep sleep states
+
+# cleaning NVMe
+sgdisk --zap-all /dev/nvme0n1
+wipefs -a /dev/nvme0n1
+blkdiscard /dev/nvme0n1
+
+# create partitions and filesystems
+parted -s /dev/nvme0n1 mklabel gpt
+parted -s /dev/nvme0n1 mkpart primary vfat 1MiB 513MiB
+parted -s /dev/nvme0n1 set 1 esp on
+parted -s /dev/nvme0n1 mkpart primary ext4 513MiB 100%
+mkfs.vfat -F 32 /dev/nvme0n1p1
+mkfs.ext4 /dev/nvme0n1p2
+mount /dev/nvme0n1p2 /mnt
+mkdir -p /mnt/boot/efi
+mount /dev/nvme0n1p1 /mnt/boot/efi
+
+# debootstrap and chroot
+setxkbmap de
+debootstrap noble /mnt http://de.archive.ubuntu.com/ubuntu/
+for i in dev dev/pts proc sys run; do mount --bind /$i /mnt/$i; done
+mount --bind /sys/firmware/efi/efivars /mnt/sys/firmware/efi/efivars
+chroot /mnt /bin/bash
+
+# let the phun begin
+apt update
+apt install -y linux-image-generic grub-efi-amd64 network-manager vim sudo systemd-resolved openssh-server linux-firmware console-setup locales
+
+# add sources
+cat <<EOF > /etc/apt/sources.list
+deb http://de.archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
+deb http://de.archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse
+deb http://de.archive.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
+EOF
+
+# os configs
+# double check fstab
+printf "UUID=$(blkid -s UUID -o value /dev/nvme0n1p2) / ext4 errors=remount-ro 0 1\nUUID=$(blkid -s UUID -o value /dev/nvme0n1p1) /boot/efi vfat umask=0077 0 2\n" > /etc/fstab
+echo "homeofcopypasta" > /etc/hostname
+echo "127.0.1.1 homeofcopypasta" >> /etc/hostname
+passwd
+useradd -m -G sudo -s /bin/bash user
+passwd user
+printf "network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    all-en:\n      match:\n        name: \"en*\"\n      dhcp4: true" > /etc/netplan/01-netcfg.yaml
+chmod 600 /etc/netplan/01-netcfg.yaml
+systemctl enable systemd-networkd systemd-resolved ssh
+rm /etc/resolv.conf
+ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+# set your language and keybsettings here
+locale-gen de_DE.UTF-8
+update-locale LANG=de_DE.UTF-8
+sed -i 's/XKBLAYOUT="us"/XKBLAYOUT="de"/' /etc/default/keyboard
+fallocate -l 16G /swap.img && chmod 600 /swap.img && mkswap /swap.img
+echo '/swap.img none swap sw 0 0' >> /etc/fstab
+
+# set kernel params in grub/write bootloader
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash pcie_aspm=off intel_iommu=off nvme_core.default_ps_max_latency_us=0"/' /etc/default/grub
+grub-install /dev/nvme0n1
+update-grub
+
+# go home and reboot
+exit
+umount -R /mnt
+reboot
