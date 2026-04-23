@@ -73,8 +73,8 @@ rm /etc/resolv.conf
 ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 # set your language and keybsettings here
-locale-gen de_DE.UTF-8
-update-locale LANG=de_DE.UTF-8
+locale-gen en_US.UTF-8
+update-locale LANG=en_US.UTF-8
 sed -i 's/XKBLAYOUT="us"/XKBLAYOUT="de"/' /etc/default/keyboard
 fallocate -l 16G /swap.img && chmod 600 /swap.img && mkswap /swap.img
 echo '/swap.img none swap sw 0 0' >> /etc/fstab
