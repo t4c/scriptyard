@@ -3,7 +3,7 @@
 # Unauthenticated Wiegand TX — Physical Access Control Bypass
 #
 # Researcher: Milan 't4c' Berger
-# Advisory:   https://github.com/t4c/rotzloeffel (full disclosure)
+# Advisory:   https://www.ghcif.de/txt/ESP-RFID-Tool_v2_PRO_-_Full_Public_Disclosure.txt
 # Affected:   ESP-RFID-Tool v2 PRO <= v2.2.2 (all versions as of 2026-05-02)
 # CVE:        Pending
 #
@@ -48,15 +48,11 @@ class MetasploitModule < Msf::Auxiliary
           disclosure 2026-04-28.
         },
         'Author'         => ['dRonin (tak47loss@mail.ru)'],
-        'References'     => [
-          ['URL', 'https://github.com/Einstein2150/ESP-RFID-Tool-v2'],
-          ['URL', 'https://github.com/t4c/rotzloeffel/docs/esp-rfid-tool-v2-advisory-final.md'],
-          ['Researcher', 'Milan "t4c" Berger']
-        ],
         'License'        => MSF_LICENSE,
         'References'     => [
           ['URL', 'https://github.com/Einstein2150/ESP-RFID-Tool-v2'],
           ['URL', 'https://www.ghcif.de/txt/ESP-RFID-Tool_v2_PRO_-_Full_Public_Disclosure.txt'],
+          ['Researcher', 'Milan "t4c" Berger']
         ],
         'DisclosureDate' => '2026-04-28',
         'Notes'          => {
