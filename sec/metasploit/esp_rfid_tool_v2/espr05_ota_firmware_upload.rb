@@ -81,7 +81,7 @@ class MetasploitModule < Msf::Exploit::Remote
         'License'     => MSF_LICENSE,
         'References'  => [
           ['URL', 'https://github.com/Einstein2150/ESP-RFID-Tool-v2'],
-          ['URL', 'https://github.com/t4c/rotzloeffel/docs/esp-rfid-tool-v2-advisory-final.md'],
+          ['URL', 'https://www.ghcif.de/txt/ESP-RFID-Tool_v2_PRO_-_Full_Public_Disclosure.txt'],
         ],
         'DisclosureDate' => '2026-04-28',
         'Platform'    => 'linux',
