@@ -3,7 +3,7 @@
 # Path Traversal — Arbitrary SPIFFS File Read (Config + Credential Dump)
 #
 # Researcher: Milan 't4c' Berger
-# Advisory:   https://github.com/t4c/rotzloeffel (full disclosure)
+# Advisory:   https://www.ghcif.de/txt/ESP-RFID-Tool_v2_PRO_-_Full_Public_Disclosure.txt
 # Affected:   ESP-RFID-Tool v2 PRO <= v2.2.2 (all versions as of 2026-05-02)
 # CVE:        Pending
 #
