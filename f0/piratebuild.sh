@@ -78,16 +78,16 @@ echo "Emulation Feature enabled"
 sed -i 's/stack_size=2 \* 1024/stack_size=8 \* 1024/g' application.fam
 echo "Stack size increased to 8 * 1024."
 
-# Optional: Timing Tuner Scene aktivieren
-echo "Do you want to enable the Timing Tuner Scene? (y/n)"
+# Optional: enable Timing Tuner
+echo "BETA: Do you want to enable the Timing Tuner? (y/n)"
 read TTUNE_REPLY
 if [ "$TTUNE_REPLY" = "y" ] || [ "$TTUNE_REPLY" = "Y" ]; then
     sed -i 's/\/\/#define ENABLE_TIMING_TUNER_SCENE/#define ENABLE_TIMING_TUNER_SCENE/g' defines.h
     echo "Timing Tuner Scene enabled."
 fi
 
-# Optional: Sub Decode Scene aktivieren
-echo "Do you want to enable the Sub Decode Scene? (y/n)"
+# Optional: enable Sub Decode
+echo "BETA: Do you want to enable the Sub Decode? (y/n)"
 read SUBDEC_REPLY
 if [ "$SUBDEC_REPLY" = "y" ] || [ "$SUBDEC_REPLY" = "Y" ]; then
     sed -i 's/\/\/#define ENABLE_SUB_DECODE_SCENE/#define ENABLE_SUB_DECODE_SCENE/g' defines.h
