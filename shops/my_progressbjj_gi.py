@@ -33,9 +33,8 @@ PANTS_HANDLE = f"bjj-pants-{COLOR}"
 TARGET_JACKET_SIZES = ["A2L", "A3L"]
 TARGET_PANT_SIZES = ["A3L"]
 
-# FABRIC TOGGLE: Uncomment your preference
-# REQUIRED_FABRIC = "Cotton"
-REQUIRED_FABRIC = "Ripstop"
+# TARGET FABRICS: Check one or both ("Cotton", "Ripstop")
+TARGET_PANT_FABRICS = ["Cotton", "Ripstop"]
 # ---------------------
 
 def get_product_json(handle):
@@ -71,7 +70,7 @@ def check_stock():
 
     print(f"--- Progress BJJ Inventory Report ({COLOR.upper()}) ---")
     print(f"Checking for Jacket sizes: {', '.join(TARGET_JACKET_SIZES)}")
-    print(f"Checking for Pants: {', '.join(TARGET_PANT_SIZES)} in {REQUIRED_FABRIC}\n")
+    print(f"Checking for Pants: {', '.join(TARGET_PANT_SIZES)} in {', '.join(TARGET_PANT_FABRICS)}\n")
 
     # JACKET CHECK
     print(f"[{jacket_data['title'].upper()}]")
@@ -89,11 +88,11 @@ def check_stock():
     p_available = False
     for v in pants_data.get("variants", []):
         title = v.get("title") 
-        if any(s in title for s in TARGET_PANT_SIZES) and REQUIRED_FABRIC in title:
+        if any(s in title for s in TARGET_PANT_SIZES) and any(f in title for f in TARGET_PANT_FABRICS):
             status = "AVAILABLE" if v.get("available") else "OUT OF STOCK"
             print(f"- {title}: {status}")
             p_available = True
-    if not p_available: print(f"No {REQUIRED_FABRIC} pants found in your sizes.")
+    if not p_available: print(f"No matching pants found in your sizes/fabrics.")
 
 if __name__ == "__main__":
     check_stock()
