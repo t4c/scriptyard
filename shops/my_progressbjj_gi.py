@@ -17,7 +17,9 @@ Progress BJJ is my favorite brand but their stock is a nightmare.
 Since their notifications suck I built this. OSS.
 """
 
-import requests
+import json
+import urllib.request
+import urllib.error
 
 # --- CONFIGURATION ---
 # Choose your color: "white", "black", or "blue"
@@ -29,22 +31,28 @@ PANTS_HANDLE = f"bjj-pants-{COLOR}"
 
 # Target sizes for your search
 TARGET_JACKET_SIZES = ["A2L", "A3L"]
-TARGET_PANT_SIZES = ["A2L", "A3L"]
+TARGET_PANT_SIZES = ["A3L"]
 
 # FABRIC TOGGLE: Uncomment your preference
-REQUIRED_FABRIC = "Cotton"
-# REQUIRED_FABRIC = "Ripstop"
+# REQUIRED_FABRIC = "Cotton"
+REQUIRED_FABRIC = "Ripstop"
 # ---------------------
 
 def get_product_json(handle):
-    url = f"https://www.progressjj-europe.com/products/{handle}.js"
-    headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"}
+    url = f"https://progressjj.co.uk/products/{handle}.js"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    }
     try:
-        response = requests.get(url, headers=headers)
-        if response.status_code == 404:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
             return None
-        response.raise_for_status()
-        return response.json()
+        print(f"Error connecting to {handle}: HTTP {e.code}")
+        return None
     except Exception as e:
         print(f"Error connecting to {handle}: {e}")
         return None
